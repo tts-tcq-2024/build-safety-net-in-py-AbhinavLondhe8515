@@ -1,3 +1,4 @@
+# soundex.py
 
 def get_soundex_code(c):
     c = c.upper()
@@ -18,13 +19,16 @@ def generate_initial_soundex(name):
     first_letter = name[0].upper()
     return first_letter, get_soundex_code(first_letter)
 
-def process_remaining_characters(name, first_letter_code):
+def should_add_code(code, prev_code):
+    return code != '0' and code != prev_code
+
+def process_characters(name, first_letter_code):
     soundex = []
     prev_code = first_letter_code
 
     for char in name[1:]:
         code = get_soundex_code(char)
-        if code != '0' and code != prev_code:
+        if should_add_code(code, prev_code):
             soundex.append(code)
             prev_code = code
         if len(soundex) == 3:  # Since the first letter is already included, we need only 3 more codes
@@ -39,7 +43,7 @@ def pad_soundex(soundex):
 
 def generate_soundex(name):
     first_letter, first_letter_code = generate_initial_soundex(name)
-    soundex = process_remaining_characters(name, first_letter_code)
+    soundex = process_characters(name, first_letter_code)
     return first_letter + pad_soundex(soundex)
 
 def main():
