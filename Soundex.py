@@ -1,3 +1,5 @@
+# soundex.py
+
 def get_soundex_code(c):
     c = c.upper()
     mapping = {
@@ -10,24 +12,40 @@ def get_soundex_code(c):
     }
     return mapping.get(c, '0')  # Default to '0' for non-mapped characters
 
-
-def generate_soundex(name):
+def generate_initial_soundex(name):
     if not name:
-        return ""
+        return "", ""
 
-    # Start with the first letter (capitalized)
-    soundex = name[0].upper()
-    prev_code = get_soundex_code(soundex)
+    first_letter = name[0].upper()
+    return first_letter, get_soundex_code(first_letter)
+
+def process_remaining_characters(name, first_letter_code):
+    soundex = [first_letter_code]
+    prev_code = first_letter_code
 
     for char in name[1:]:
         code = get_soundex_code(char)
         if code != '0' and code != prev_code:
-            soundex += code
+            soundex.append(code)
             prev_code = code
         if len(soundex) == 4:
             break
 
-    # Pad with zeros if necessary
-    soundex = soundex.ljust(4, '0')
-
     return soundex
+
+def pad_soundex(soundex):
+    while len(soundex) < 4:
+        soundex.append('0')
+    return ''.join(soundex)
+
+def generate_soundex(name):
+    first_letter, first_letter_code = generate_initial_soundex(name)
+    soundex = process_remaining_characters(name, first_letter_code)
+    return pad_soundex([first_letter] + soundex[1:])
+
+def main():
+    name = input("Enter a name to generate its Soundex code: ")
+    print("Soundex code:", generate_soundex(name))
+
+if __name__ == '__main__':
+    main()
