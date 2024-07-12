@@ -19,27 +19,22 @@ def generate_initial_soundex(name):
     first_letter = name[0].upper()
     return first_letter, get_soundex_code(first_letter)
 
-def should_add_code(code, prev_code):
-    return code != '0' and code != prev_code
-
 def process_characters(name, first_letter_code):
     soundex = []
     prev_code = first_letter_code
 
     for char in name[1:]:
         code = get_soundex_code(char)
-        if should_add_code(code, prev_code):
+        if code != '0' and code != prev_code:
             soundex.append(code)
             prev_code = code
-        if len(soundex) == 3:  # Since the first letter is already included, we need only 3 more codes
-            break
+            if len(soundex) == 3:  # Since the first letter is already included, we need only 3 more codes
+                break
 
     return soundex
 
 def pad_soundex(soundex):
-    while len(soundex) < 3:  # Now we pad to ensure only 3 additional codes
-        soundex.append('0')
-    return ''.join(soundex)
+    return ''.join(soundex).ljust(3, '0')
 
 def generate_soundex(name):
     first_letter, first_letter_code = generate_initial_soundex(name)
