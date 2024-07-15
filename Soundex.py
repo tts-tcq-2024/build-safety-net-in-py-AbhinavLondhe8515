@@ -1,7 +1,4 @@
-# soundex.py
-
 def get_soundex_code(c):
-    c = c.upper()
     mapping = {
         'B': '1', 'F': '1', 'P': '1', 'V': '1',
         'C': '2', 'G': '2', 'J': '2', 'K': '2', 'Q': '2', 'S': '2', 'X': '2', 'Z': '2',
@@ -10,11 +7,11 @@ def get_soundex_code(c):
         'M': '5', 'N': '5',
         'R': '6'
     }
-    return mapping.get(c, '0')  # Default to '0' for non-mapped characters
+    return mapping.get(c.upper(), '0')  # Default to '0' for non-mapped characters
 
 def generate_initial_soundex(name):
     if not name:
-        return "", ""
+        return "", "0"
 
     first_letter = name[0].upper()
     return first_letter, get_soundex_code(first_letter)
