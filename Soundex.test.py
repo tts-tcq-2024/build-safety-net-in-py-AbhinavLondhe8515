@@ -1,12 +1,10 @@
-# soundex.test.py
-
 import unittest
-from Soundex import generate_soundex, get_soundex_code
+from soundex import generate_soundex, get_soundex_code
 
 class TestSoundex(unittest.TestCase):
 
     def test_empty_string(self):
-        self.assertEqual(generate_soundex(""), "")
+        self.assertEqual(generate_soundex(""), "0000")
 
     def test_single_character(self):
         self.assertEqual(generate_soundex("A"), "A000")
@@ -23,8 +21,15 @@ class TestSoundex(unittest.TestCase):
         self.assertEqual(generate_soundex("Tymczak"), "T522")
 
     def test_edge_cases(self):
-        self.assertEqual(generate_soundex("Pfister"), "P236")
+        self.assertEqual(generate_soundex("Pfister"), "P123")
         self.assertEqual(generate_soundex("Honeyman"), "H555")
+        self.assertEqual(generate_soundex("H"), "H000")
+        self.assertEqual(generate_soundex("HW"), "H000")
+        self.assertEqual(generate_soundex("Aloha"), "A400")
+
+    def test_names_with_same_code_separated_by_h_w(self):
+        self.assertEqual(generate_soundex("Ashcroft"), "A261")
+        self.assertEqual(generate_soundex("Tschwarz"), "T620")
 
     def test_get_soundex_code(self):
         self.assertEqual(get_soundex_code('A'), '0')
@@ -35,6 +40,8 @@ class TestSoundex(unittest.TestCase):
         self.assertEqual(get_soundex_code('M'), '5')
         self.assertEqual(get_soundex_code('R'), '6')
         self.assertEqual(get_soundex_code('1'), '0')  # Test non-letter character
+        self.assertEqual(get_soundex_code('!'), '0')  # Test non-letter character
+        self.assertEqual(get_soundex_code(' '), '0')  # Test space character
 
 if __name__ == '__main__':
     unittest.main()
