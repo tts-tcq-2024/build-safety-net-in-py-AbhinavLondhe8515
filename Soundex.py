@@ -22,13 +22,14 @@ def process_characters(name, first_letter_code):
 
     for char in name[1:]:
         code = get_soundex_code(char)
-        if code != '0' and code != prev_code:
+        if code == '0':
+            prev_code = '0'  # Reset prev_code if the current character is '0'
+            continue
+        if code != prev_code:
             soundex.append(code)
             prev_code = code
             if len(soundex) == 3:
                 break
-        elif code == '0':
-            prev_code = '0'  # Reset prev_code if the current character is '0'
 
     return soundex
 
@@ -36,6 +37,9 @@ def pad_soundex(soundex):
     return ''.join(soundex).ljust(3, '0')
 
 def generate_soundex(name):
+    if not name:
+        return "0000"
+
     first_letter, first_letter_code = generate_initial_soundex(name)
     soundex = process_characters(name, first_letter_code)
     return first_letter + pad_soundex(soundex)
