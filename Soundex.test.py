@@ -1,5 +1,5 @@
 import unittest
-from soundex import generate_soundex, get_soundex_code
+from Soundex import generate_soundex, get_soundex_code
 
 class TestSoundex(unittest.TestCase):
 
