@@ -1,52 +1,42 @@
-def get_soundex_code(c):
-    mapping = {
+soundex_dict = {
         'B': '1', 'F': '1', 'P': '1', 'V': '1',
         'C': '2', 'G': '2', 'J': '2', 'K': '2', 'Q': '2', 'S': '2', 'X': '2', 'Z': '2',
         'D': '3', 'T': '3',
         'L': '4',
         'M': '5', 'N': '5',
         'R': '6'
-    }
-    return mapping.get(c.upper(), '0')  # Default to '0' for non-mapped characters
+}
 
-def generate_initial_soundex(name):
-    if not name:
-        return "", "0"
+def get_soundex_code(char):
+    return soundex_dict.get(char.upper(), '')
 
+def initialize_soundex(name):
     first_letter = name[0].upper()
-    return first_letter, get_soundex_code(first_letter)
+    first_code = get_soundex_code(first_letter)
+    return first_letter, first_code
 
-def process_characters(name, first_letter_code):
-    soundex = []
-    prev_code = first_letter_code
+def should_process_char(soundex, char):
+    return len(soundex) < 4 and char.isalpha()
 
-    for char in name[1:]:
-        code = get_soundex_code(char)
-        if code == '0':
-            prev_code = '0'  # Reset prev_code if the current character is '0'
-            continue
-        if code != prev_code:
-            soundex.append(code)
-            prev_code = code
-            if len(soundex) == 3:
-                break
+def update_soundex(soundex, prev_code, char):
+    current_code = get_soundex_code(char)
+    if current_code != prev_code and current_code != '':
+        soundex += current_code
+    return soundex, current_code
 
-    return soundex
-
-def pad_soundex(soundex):
-    return ''.join(soundex).ljust(3, '0')
+def finalize_soundex(soundex):
+    return soundex.ljust(4, '0')
 
 def generate_soundex(name):
     if not name:
-        return "0000"
+        return ""
 
-    first_letter, first_letter_code = generate_initial_soundex(name)
-    soundex = process_characters(name, first_letter_code)
-    return first_letter + pad_soundex(soundex)
+    soundex, prev_code = initialize_soundex(name)
+    soundex = process_name(name, soundex, prev_code)
+    return finalize_soundex(soundex)
 
-def main():
-    name = input("Enter a name to generate its Soundex code: ")
-    print("Soundex code:", generate_soundex(name))
-
-if __name__ == '__main__':
-    main()
+def process_name(name, soundex, prev_code):
+    for char in name[1:]:
+        if should_process_char(soundex, char):
+            soundex, prev_code = update_soundex(soundex, prev_code, char)
+    return soundex
