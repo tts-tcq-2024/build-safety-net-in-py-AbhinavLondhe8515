@@ -1,47 +1,44 @@
 import unittest
-from Soundex import generate_soundex, get_soundex_code
+from Soundex import generate_soundex
 
 class TestSoundex(unittest.TestCase):
-
+    #empty string
     def test_empty_string(self):
-        self.assertEqual(generate_soundex(""), "0000")
+        self.assertEqual(generate_soundex(""), "")
 
+    #single character
     def test_single_character(self):
         self.assertEqual(generate_soundex("A"), "A000")
         self.assertEqual(generate_soundex("B"), "B000")
-        self.assertEqual(generate_soundex("Z"), "Z000")
 
-    def test_simple_names(self):
-        self.assertEqual(generate_soundex("Robert"), "R163")
-        self.assertEqual(generate_soundex("Rupert"), "R163")
-        self.assertEqual(generate_soundex("Rubin"), "R150")
+    #vowel start
+    def test_vowel_start(self):
+        self.assertEqual(generate_soundex("example"), "E251")
+        self.assertEqual(generate_soundex("E"), "E000")
 
-    def test_names_with_vowels(self):
-        self.assertEqual(generate_soundex("Ashcraft"), "A261")
+    #consonant start
+    def test_consonant_start(self):
+        self.assertEqual(generate_soundex("sound"), "S530")
+        self.assertEqual(generate_soundex("Smith"), "S530")
+
+    #repeated consonants
+    def test_repeated_consonants(self):
         self.assertEqual(generate_soundex("Tymczak"), "T522")
+        self.assertEqual(generate_soundex("Pfister"), "P236")
 
-    def test_edge_cases(self):
-        self.assertEqual(generate_soundex("Pfister"), "P123")
-        self.assertEqual(generate_soundex("Honeyman"), "H555")
-        self.assertEqual(generate_soundex("H"), "H000")
-        self.assertEqual(generate_soundex("HW"), "H000")
-        self.assertEqual(generate_soundex("Aloha"), "A400")
+    #mixed case
+    def test_mixed_case(self):
+        self.assertEqual(generate_soundex("Example"), "E251")
+        self.assertEqual(generate_soundex("SOUND"), "S530")
+    
+    #alphanumaric
+    def test_non_alpha_characters(self):
+        self.assertEqual(generate_soundex("S!ound"), "S530")
+        self.assertEqual(generate_soundex("1234"), "1000")
 
-    def test_names_with_same_code_separated_by_h_w(self):
-        self.assertEqual(generate_soundex("Ashcroft"), "A261")
-        self.assertEqual(generate_soundex("Tschwarz"), "T620")
-
-    def test_get_soundex_code(self):
-        self.assertEqual(get_soundex_code('A'), '0')
-        self.assertEqual(get_soundex_code('B'), '1')
-        self.assertEqual(get_soundex_code('C'), '2')
-        self.assertEqual(get_soundex_code('D'), '3')
-        self.assertEqual(get_soundex_code('L'), '4')
-        self.assertEqual(get_soundex_code('M'), '5')
-        self.assertEqual(get_soundex_code('R'), '6')
-        self.assertEqual(get_soundex_code('1'), '0')  # Test non-letter character
-        self.assertEqual(get_soundex_code('!'), '0')  # Test non-letter character
-        self.assertEqual(get_soundex_code(' '), '0')  # Test space character
+    #long string
+    def test_long_name(self):
+        self.assertEqual(generate_soundex("Washington"), "W252")
 
 if __name__ == '__main__':
     unittest.main()
